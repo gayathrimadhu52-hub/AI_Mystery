@@ -31,7 +31,7 @@ The repository includes deployment configuration for a Render API and a Vercel f
 ### Deploy the API to Render
 
 1. In Render, create a **Blueprint** and select this GitHub repository. Render reads `render.yaml` and creates the API web service.
-2. Add these secret values when prompted, or in the service's **Environment** settings: `MONGODB_URI` (your Atlas connection string), `GEMINI_API_KEY` (a rotated Gemini key), and `CLIENT_URL` (the Vercel site origin; set this after Vercel has assigned the frontend URL).
+2. Add these values when prompted, or in the service's **Environment** settings: `MONGODB_URI` (your Atlas connection string), `GEMINI_API_KEY` (a rotated Gemini key), and `CLIENT_URL` (use `http://localhost:5173` temporarily, then replace it with the Vercel site origin after Vercel assigns one).
 3. Wait for the service to deploy. Its health endpoint is `/api/health`; note the service's `https://…onrender.com` base URL.
 
 ### Deploy the frontend to Vercel
@@ -41,4 +41,4 @@ The repository includes deployment configuration for a Render API and a Vercel f
 3. Add the public environment variable `VITE_API_BASE_URL` with the Render API URL plus `/api`, for example `https://your-api.onrender.com/api`.
 4. Deploy and note the Vercel production origin (for example `https://your-app.vercel.app`). Set that exact origin as Render's `CLIENT_URL`, then redeploy the API.
 
-The Gemini key and MongoDB URI belong on Render only, never on Vercel or in Git. Keep all real credentials out of `.env.example` and GitHub. Free hosting plans may sleep when idle, so the first request after inactivity can take longer. Add a generation rate limit and review your provider's current pricing/limits before a public launch.
+The Gemini key and MongoDB URI belong on Render only, never on Vercel or in Git. Keep all real credentials out of `.env.example` and GitHub. For Atlas access, add the Render service's outbound IP ranges (shown under **Connect → Outbound** in Render) to the Atlas project's IP access list. Free hosting plans may sleep when idle, so the first request after inactivity can take longer. Add a generation rate limit and review your provider's current pricing/limits before a public launch.
