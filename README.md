@@ -26,4 +26,19 @@ The frontend reads `VITE_API_BASE_URL` (defaults to `http://localhost:5000/api`)
 
 ## Production
 
-Deploy the Node server and React/Vite frontend separately, configure the environment variables from the example, use HTTPS, and set production CORS to the deployed frontend origin. Add a generation rate limit before exposing the API publicly.
+The repository includes deployment configuration for a Render API and a Vercel frontend. Both connect to the same GitHub repository. Render uses the root workspace and starts only the server; Vercel builds the client bundle and applies SPA routing for refreshed case URLs.
+
+### Deploy the API to Render
+
+1. In Render, create a **Blueprint** and select this GitHub repository. Render reads `render.yaml` and creates the API web service.
+2. Add these secret values when prompted, or in the service's **Environment** settings: `MONGODB_URI` (your Atlas connection string), `GEMINI_API_KEY` (a rotated Gemini key), and `CLIENT_URL` (the Vercel site origin; set this after Vercel has assigned the frontend URL).
+3. Wait for the service to deploy. Its health endpoint is `/api/health`; note the service's `https://…onrender.com` base URL.
+
+### Deploy the frontend to Vercel
+
+1. Import this GitHub repository into Vercel.
+2. Keep the project root at the repository root (`.`). Use the included `vercel.json`: install command `npm ci`, build command `npm run build`, output directory `client/dist`.
+3. Add the public environment variable `VITE_API_BASE_URL` with the Render API URL plus `/api`, for example `https://your-api.onrender.com/api`.
+4. Deploy and note the Vercel production origin (for example `https://your-app.vercel.app`). Set that exact origin as Render's `CLIENT_URL`, then redeploy the API.
+
+The Gemini key and MongoDB URI belong on Render only, never on Vercel or in Git. Keep all real credentials out of `.env.example` and GitHub. Free hosting plans may sleep when idle, so the first request after inactivity can take longer. Add a generation rate limit and review your provider's current pricing/limits before a public launch.

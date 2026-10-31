@@ -2,7 +2,10 @@
   "name": "ai-mystery-room",
   "version": "1.0.0",
   "private": true,
-  "workspaces": ["client", "server"],
+  "workspaces": [
+    "client",
+    "server"
+  ],
   "scripts": {
     "dev": "concurrently -n server,client -c yellow,cyan \"npm:dev:server\" \"npm:dev:client\"",
     "dev:client": "npm --workspace client run dev",
@@ -10,5 +13,10 @@
     "build": "npm --workspace client run build",
     "start": "npm --workspace server run start"
   },
-  "devDependencies": { "concurrently": "^9.1.2" }
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "allowScripts": {
+    "esbuild@0.25.12": true
+  }
 }
