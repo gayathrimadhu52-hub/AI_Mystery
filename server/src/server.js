@@ -1,9 +1,16 @@
 import 'dotenv/config';
 import mongoose from 'mongoose';
 import { app } from './app.js';
-import { MONGODB_URI, PORT } from './config.js';
+import { CLIENT_URL, GEMINI_API_KEY, MONGODB_URI, PORT } from './config.js';
 
-if (!MONGODB_URI) throw new Error('MONGODB_URI is required.');
+const requiredEnv = [
+  ['MONGODB_URI', MONGODB_URI],
+  ['GEMINI_API_KEY', GEMINI_API_KEY],
+  ...(process.env.NODE_ENV === 'production' ? [['CLIENT_URL', CLIENT_URL]] : []),
+];
+const missingEnv = requiredEnv.filter(([, value]) => !value).map(([name]) => name);
+if (missingEnv.length) throw new Error(`Missing required environment variable(s): ${missingEnv.join(', ')}`);
+
 try {
   await mongoose.connect(MONGODB_URI, { serverSelectionTimeoutMS: 10000 });
 } catch (error) {
